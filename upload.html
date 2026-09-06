@@ -2,329 +2,309 @@
 <html lang="it">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Upload — Milano / 2026</title>
 
   <link rel="stylesheet" href="style.css">
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-
     .upload-page {
-
       min-height: 100vh;
-
       display: flex;
       align-items: center;
       justify-content: center;
-
       padding: 30px;
-
     }
 
     .upload-box {
-
       width: 100%;
       max-width: 520px;
-
     }
 
     .upload-box h1 {
-
       font-size: 42px;
-
       font-weight: 500;
-
       letter-spacing: -0.04em;
-
       margin-bottom: 8px;
-
     }
 
     .subtitle {
-
       font-size: 13px;
-
       margin-bottom: 45px;
-
       opacity: 0.6;
-
     }
 
     .field {
-
       margin-bottom: 28px;
-
     }
 
     label {
-
       display: block;
-
       font-size: 11px;
-
       text-transform: uppercase;
-
       letter-spacing: 0.08em;
-
       margin-bottom: 8px;
-
     }
 
     input {
-
       width: 100%;
-
       border: 0;
-
       border-bottom: 1px solid #aaa;
-
       background: transparent;
-
       padding: 12px 0;
-
       font-size: 16px;
-
       font-family: inherit;
-
       outline: none;
-
     }
 
     input:focus {
-
       border-color: #111;
-
     }
 
     .file-drop {
-
       border: 1px dashed #aaa;
-
       padding: 35px 20px;
-
       text-align: center;
-
       margin-bottom: 30px;
-
     }
 
     .file-drop input {
-
       border: 0;
-
       padding: 10px 0 0;
-
     }
 
     #preview {
-
       width: 100%;
-
       margin-bottom: 30px;
-
       display: none;
-
     }
 
     button {
-
       width: 100%;
-
       border: 0;
-
       background: #111;
-
       color: white;
-
       padding: 16px;
-
       font-size: 13px;
-
       letter-spacing: 0.08em;
-
       cursor: pointer;
-
+      margin-top: 8px;
     }
 
-    button:hover {
-
-      opacity: 0.8;
-
+    button.secondary {
+      background: transparent;
+      color: #111;
+      border: 1px solid #111;
     }
 
     .status {
-
       margin-top: 15px;
-
       text-align: center;
-
       font-size: 12px;
-
-      opacity: 0.6;
-
+      opacity: 0.7;
     }
 
+    #uploadSection {
+      display: none;
+    }
   </style>
-
 </head>
 
 <body>
 
   <div class="upload-page">
-
     <div class="upload-box">
 
       <h1>MILANO / 2026</h1>
+      <p class="subtitle">Photo archive manager</p>
 
-      <p class="subtitle">
-        Photo archive manager
-      </p>
+      <div id="loginSection">
 
-      <img id="preview" alt="Anteprima fotografia">
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email">
+        </div>
 
-      <div class="file-drop">
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password">
+        </div>
 
-        <label for="photo">
-          Scegli fotografia
-        </label>
+        <button id="loginButton">
+          ACCEDI
+        </button>
 
-        <input
-          type="file"
-          id="photo"
-          accept="image/*"
-        >
-
-      </div>
-
-      <div class="field">
-
-        <label for="location">
-          Luogo
-        </label>
-
-        <input
-          type="text"
-          id="location"
-          placeholder="Via Tortona, Milano"
-        >
+        <div class="status" id="loginStatus"></div>
 
       </div>
 
-      <div class="field">
+      <div id="uploadSection">
 
-        <label for="film">
-          Pellicola
-        </label>
+        <img id="preview" alt="Anteprima fotografia">
 
-        <input
-          type="text"
-          id="film"
-          placeholder="Kodak Portra 400"
-        >
+        <div class="file-drop">
+          <label for="photo">Scegli fotografia</label>
+          <input type="file" id="photo" accept="image/*">
+        </div>
 
-      </div>
+        <div class="field">
+          <label for="location">Luogo</label>
+          <input type="text" id="location" placeholder="Via Tortona, Milano">
+        </div>
 
-      <button id="uploadButton">
-        PUBBLICA FOTO
-      </button>
+        <div class="field">
+          <label for="film">Pellicola</label>
+          <input type="text" id="film" placeholder="Kodak Portra 400">
+        </div>
 
-      <div
-        class="status"
-        id="status"
-      >
-        Upload non ancora collegato
+        <button id="uploadButton">
+          PUBBLICA FOTO
+        </button>
+
+        <button class="secondary" id="logoutButton">
+          ESCI
+        </button>
+
+        <div class="status" id="status"></div>
+
       </div>
 
     </div>
-
   </div>
 
   <script>
+    const SUPABASE_URL = "https://gcsgchwjpkmeytzjdpyp.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjc2djaHdqcGttZXl0empkcHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NTg4MDYsImV4cCI6MjEwNDIzNDgwNn0.WvP4HSRbQdtvdUHwMVxi0vCJ3n1UpgfVacVU1zXs0U8";
 
-    const photoInput =
-      document.getElementById("photo");
-
-    const preview =
-      document.getElementById("preview");
-
-    const status =
-      document.getElementById("status");
-
-    const uploadButton =
-      document.getElementById("uploadButton");
-
-
-    photoInput.addEventListener(
-      "change",
-      () => {
-
-        const file =
-          photoInput.files[0];
-
-        if (!file) return;
-
-        preview.src =
-          URL.createObjectURL(file);
-
-        preview.style.display =
-          "block";
-
-      }
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
     );
 
+    const loginSection = document.getElementById("loginSection");
+    const uploadSection = document.getElementById("uploadSection");
 
-    uploadButton.addEventListener(
-      "click",
-      () => {
+    const loginStatus = document.getElementById("loginStatus");
+    const status = document.getElementById("status");
+
+    const photoInput = document.getElementById("photo");
+    const preview = document.getElementById("preview");
+
+    async function checkSession() {
+      const { data } = await supabaseClient.auth.getSession();
+
+      if (data.session) {
+        loginSection.style.display = "none";
+        uploadSection.style.display = "block";
+      }
+    }
+
+    checkSession();
+
+    document
+      .getElementById("loginButton")
+      .addEventListener("click", async () => {
+
+        loginStatus.innerText = "Accesso...";
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          loginStatus.innerText = error.message;
+          return;
+        }
+
+        loginSection.style.display = "none";
+        uploadSection.style.display = "block";
+        loginStatus.innerText = "";
+      });
+
+
+    document
+      .getElementById("logoutButton")
+      .addEventListener("click", async () => {
+
+        await supabaseClient.auth.signOut();
+
+        uploadSection.style.display = "none";
+        loginSection.style.display = "block";
+      });
+
+
+    photoInput.addEventListener("change", () => {
+
+      const file = photoInput.files[0];
+
+      if (!file) return;
+
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = "block";
+    });
+
+
+    document
+      .getElementById("uploadButton")
+      .addEventListener("click", async () => {
+
+        const file = photoInput.files[0];
 
         const location =
-          document.getElementById("location").value;
+          document.getElementById("location").value.trim();
 
         const film =
-          document.getElementById("film").value;
+          document.getElementById("film").value.trim();
 
-        if (!photoInput.files[0]) {
-
-          status.innerText =
-            "Seleziona prima una fotografia.";
-
+        if (!file) {
+          status.innerText = "Seleziona una fotografia.";
           return;
-
         }
 
         if (!location) {
-
-          status.innerText =
-            "Inserisci il luogo.";
-
+          status.innerText = "Inserisci il luogo.";
           return;
-
         }
 
         if (!film) {
+          status.innerText = "Inserisci la pellicola.";
+          return;
+        }
 
+        status.innerText = "Caricamento...";
+
+        const extension =
+          file.name.split(".").pop();
+
+        const fileName =
+          `${Date.now()}.${extension}`;
+
+        const { error } =
+          await supabaseClient
+            .storage
+            .from("photos")
+            .upload(fileName, file);
+
+        if (error) {
           status.innerText =
-            "Inserisci la pellicola.";
+            "Errore upload: " + error.message;
 
           return;
-
         }
 
         status.innerText =
-          "Interfaccia pronta — upload da collegare.";
-
-      }
-    );
-
+          "Foto caricata correttamente ✅";
+      });
   </script>
 
 </body>
-
 </html>
