@@ -1,0 +1,127 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f4f3ef;
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    padding: 35px 5vw 70px;
+}
+
+.name {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+}
+
+.hero {
+    margin-top: 90px;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 9vw, 130px);
+    font-weight: 500;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+}
+
+.hero p {
+    margin-top: 18px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+}
+
+/* GALLERIA */
+
+.gallery {
+    width: 90%;
+    max-width: 1500px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8vw 3vw;
+    align-items: start;
+}
+
+figure {
+    width: 100%;
+}
+
+figure:nth-child(3n) {
+    grid-column: 1 / -1;
+    width: 70%;
+    margin: 3vw auto;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+figcaption {
+    margin-top: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+/* FOOTER */
+
+footer {
+    margin-top: 150px;
+    padding: 40px 5vw;
+    border-top: 1px solid #ccc;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+}
+
+/* TELEFONO */
+
+@media (max-width: 700px) {
+
+    header {
+        padding: 25px 20px 55px;
+    }
+
+    .hero {
+        margin-top: 65px;
+    }
+
+    .hero h1 {
+        font-size: 15vw;
+    }
+
+    .gallery {
+        width: 100%;
+        display: block;
+    }
+
+    figure,
+    figure:nth-child(3n) {
+        width: 100%;
+        margin: 0 0 55px;
+    }
+
+    figcaption {
+        padding: 0 15px;
+    }
+
+    footer {
+        margin-top: 70px;
+        padding: 30px 20px;
+        display: block;
+    }
+
+    footer p + p {
+        margin-top: 8px;
+    }
+}
