@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload — Milano / 2026</title>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .upload-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .upload-box {
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .upload-box h1 {
+      font-size: 42px;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .upload-box .subtitle {
+      font-size: 13px;
+      margin-bottom: 45px;
+      opacity: 0.6;
+    }
+
+    .field {
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid #aaa;
+      background: transparent;
+      padding: 12px 0;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .file-drop {
+      border: 1px dashed #aaa;
+      padding: 35px 20px;
+      text-align: center;
+      cursor: pointer;
+      margin-bottom: 25px;
+    }
+
+    .file-drop input {
+      border: 0;
+    }
+
+    #preview {
+      width: 100%;
+      margin-bottom: 25px;
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      background: #111;
+      color: white;
+      padding: 16px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="upload-page">
+
+  <div class="upload-box">
+
+    <h1>MILANO / 2026</h1>
+    <p class="subtitle">Photo archive manager</p>
+
+    <img id="preview">
+
+    <div class="file-drop">
+      <label for="photo">Scegli fotografia</label>
+      <input type="file" id="photo" accept="image/*">
+    </div>
+
+    <div class="field">
+      <label>Titolo</label>
+      <input type="text" id="title" placeholder="Facoltativo">
+    </div>
+
+    <div class="field">
+      <label>Luogo</label>
+      <input type="text" id="location" placeholder="Milano">
+    </div>
+
+    <div class="field">
+      <label>Data</label>
+      <input type="date" id="date">
+    </div>
+
+    <div class="field">
+      <label>Nota</label>
+      <textarea id="description" placeholder="Facoltativa"></textarea>
+    </div>
+
+    <button id="uploadButton">
+      PUBBLICA FOTO
+    </button>
+
+    <div class="status" id="status">
+      Upload non ancora collegato
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const photoInput = document.getElementById("photo");
+const preview = document.getElementById("preview");
+
+photoInput.addEventListener("change", () => {
+
+  const file = photoInput.files[0];
+
+  if (!file) return;
+
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = "block";
+
+});
+
+document
+  .getElementById("uploadButton")
+  .addEventListener("click", () => {
+
+    document.getElementById("status").innerText =
+      "Interfaccia pronta — collegamento upload da configurare.";
+
+  });
+
+</script>
+
+</body>
+</html>
