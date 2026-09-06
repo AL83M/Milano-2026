@@ -1,179 +1,330 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Upload — Milano / 2026</title>
+
   <link rel="stylesheet" href="style.css">
 
   <style>
+
     .upload-page {
+
       min-height: 100vh;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
       padding: 30px;
+
     }
 
     .upload-box {
+
       width: 100%;
       max-width: 520px;
+
     }
 
     .upload-box h1 {
+
       font-size: 42px;
+
       font-weight: 500;
+
       letter-spacing: -0.04em;
+
       margin-bottom: 8px;
+
     }
 
-    .upload-box .subtitle {
+    .subtitle {
+
       font-size: 13px;
+
       margin-bottom: 45px;
+
       opacity: 0.6;
+
     }
 
     .field {
-      margin-bottom: 25px;
+
+      margin-bottom: 28px;
+
     }
 
     label {
+
       display: block;
+
       font-size: 11px;
+
       text-transform: uppercase;
+
       letter-spacing: 0.08em;
+
       margin-bottom: 8px;
+
     }
 
-    input,
-    textarea {
+    input {
+
       width: 100%;
+
       border: 0;
+
       border-bottom: 1px solid #aaa;
+
       background: transparent;
+
       padding: 12px 0;
+
       font-size: 16px;
+
       font-family: inherit;
+
       outline: none;
+
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 70px;
+    input:focus {
+
+      border-color: #111;
+
     }
 
     .file-drop {
+
       border: 1px dashed #aaa;
+
       padding: 35px 20px;
+
       text-align: center;
-      cursor: pointer;
-      margin-bottom: 25px;
+
+      margin-bottom: 30px;
+
     }
 
     .file-drop input {
+
       border: 0;
+
+      padding: 10px 0 0;
+
     }
 
     #preview {
+
       width: 100%;
-      margin-bottom: 25px;
+
+      margin-bottom: 30px;
+
       display: none;
+
     }
 
     button {
+
       width: 100%;
+
       border: 0;
+
       background: #111;
+
       color: white;
+
       padding: 16px;
+
       font-size: 13px;
+
       letter-spacing: 0.08em;
+
       cursor: pointer;
+
+    }
+
+    button:hover {
+
+      opacity: 0.8;
+
     }
 
     .status {
+
       margin-top: 15px;
+
       text-align: center;
+
       font-size: 12px;
+
       opacity: 0.6;
+
     }
+
   </style>
+
 </head>
 
 <body>
 
-<div class="upload-page">
+  <div class="upload-page">
 
-  <div class="upload-box">
+    <div class="upload-box">
 
-    <h1>MILANO / 2026</h1>
-    <p class="subtitle">Photo archive manager</p>
+      <h1>MILANO / 2026</h1>
 
-    <img id="preview">
+      <p class="subtitle">
+        Photo archive manager
+      </p>
 
-    <div class="file-drop">
-      <label for="photo">Scegli fotografia</label>
-      <input type="file" id="photo" accept="image/*">
-    </div>
+      <img id="preview" alt="Anteprima fotografia">
 
-    <div class="field">
-      <label>Titolo</label>
-      <input type="text" id="title" placeholder="Facoltativo">
-    </div>
+      <div class="file-drop">
 
-    <div class="field">
-      <label>Luogo</label>
-      <input type="text" id="location" placeholder="Milano">
-    </div>
+        <label for="photo">
+          Scegli fotografia
+        </label>
 
-    <div class="field">
-      <label>Data</label>
-      <input type="date" id="date">
-    </div>
+        <input
+          type="file"
+          id="photo"
+          accept="image/*"
+        >
 
-    <div class="field">
-      <label>Nota</label>
-      <textarea id="description" placeholder="Facoltativa"></textarea>
-    </div>
+      </div>
 
-    <button id="uploadButton">
-      PUBBLICA FOTO
-    </button>
+      <div class="field">
 
-    <div class="status" id="status">
-      Upload non ancora collegato
+        <label for="location">
+          Luogo
+        </label>
+
+        <input
+          type="text"
+          id="location"
+          placeholder="Via Tortona, Milano"
+        >
+
+      </div>
+
+      <div class="field">
+
+        <label for="film">
+          Pellicola
+        </label>
+
+        <input
+          type="text"
+          id="film"
+          placeholder="Kodak Portra 400"
+        >
+
+      </div>
+
+      <button id="uploadButton">
+        PUBBLICA FOTO
+      </button>
+
+      <div
+        class="status"
+        id="status"
+      >
+        Upload non ancora collegato
+      </div>
+
     </div>
 
   </div>
 
-</div>
+  <script>
 
-<script>
+    const photoInput =
+      document.getElementById("photo");
 
-const photoInput = document.getElementById("photo");
-const preview = document.getElementById("preview");
+    const preview =
+      document.getElementById("preview");
 
-photoInput.addEventListener("change", () => {
+    const status =
+      document.getElementById("status");
 
-  const file = photoInput.files[0];
+    const uploadButton =
+      document.getElementById("uploadButton");
 
-  if (!file) return;
 
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
+    photoInput.addEventListener(
+      "change",
+      () => {
 
-});
+        const file =
+          photoInput.files[0];
 
-document
-  .getElementById("uploadButton")
-  .addEventListener("click", () => {
+        if (!file) return;
 
-    document.getElementById("status").innerText =
-      "Interfaccia pronta — collegamento upload da configurare.";
+        preview.src =
+          URL.createObjectURL(file);
 
-  });
+        preview.style.display =
+          "block";
 
-</script>
+      }
+    );
+
+
+    uploadButton.addEventListener(
+      "click",
+      () => {
+
+        const location =
+          document.getElementById("location").value;
+
+        const film =
+          document.getElementById("film").value;
+
+        if (!photoInput.files[0]) {
+
+          status.innerText =
+            "Seleziona prima una fotografia.";
+
+          return;
+
+        }
+
+        if (!location) {
+
+          status.innerText =
+            "Inserisci il luogo.";
+
+          return;
+
+        }
+
+        if (!film) {
+
+          status.innerText =
+            "Inserisci la pellicola.";
+
+          return;
+
+        }
+
+        status.innerText =
+          "Interfaccia pronta — upload da collegare.";
+
+      }
+    );
+
+  </script>
 
 </body>
+
 </html>
