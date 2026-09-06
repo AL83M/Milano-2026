@@ -177,57 +177,93 @@
   </div>
 
   <script>
-    const SUPABASE_URL = "https://gcsgchwjpkmeytzjdpyp.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjc2djaHdqcGttZXl0empkcHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NTg4MDYsImV4cCI6MjEwNDIzNDgwNn0.WvP4HSRbQdtvdUHwMVxi0vCJ3n1UpgfVacVU1zXs0U8";
 
-    const supabaseClient = supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_ANON_KEY
-    );
+    const SUPABASE_URL =
+      "https://gcsgchwjpkmeytzjdpyp.supabase.co";
 
-    const loginSection = document.getElementById("loginSection");
-    const uploadSection = document.getElementById("uploadSection");
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjc2djaHdqcGttZXl0empkcHlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg2NTg4MDYsImV4cCI6MjEwNDIzNDgwNn0.WvP4HSRbQdtvdUHwMVxi0vCJ3n1UpgfVacVU1zXs0U8";
 
-    const loginStatus = document.getElementById("loginStatus");
-    const status = document.getElementById("status");
+    const supabaseClient =
+      supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
 
-    const photoInput = document.getElementById("photo");
-    const preview = document.getElementById("preview");
+
+    const loginSection =
+      document.getElementById("loginSection");
+
+    const uploadSection =
+      document.getElementById("uploadSection");
+
+    const loginStatus =
+      document.getElementById("loginStatus");
+
+    const status =
+      document.getElementById("status");
+
+    const photoInput =
+      document.getElementById("photo");
+
+    const preview =
+      document.getElementById("preview");
+
 
     async function checkSession() {
-      const { data } = await supabaseClient.auth.getSession();
+
+      const { data } =
+        await supabaseClient.auth.getSession();
 
       if (data.session) {
+
         loginSection.style.display = "none";
         uploadSection.style.display = "block";
+
       }
+
     }
 
     checkSession();
+
 
     document
       .getElementById("loginButton")
       .addEventListener("click", async () => {
 
-        loginStatus.innerText = "Accesso...";
+        loginStatus.innerText =
+          "Accesso...";
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const email =
+          document.getElementById("email").value;
 
-        const { data, error } =
+        const password =
+          document.getElementById("password").value;
+
+        const { error } =
           await supabaseClient.auth.signInWithPassword({
             email,
             password
           });
 
         if (error) {
-          loginStatus.innerText = error.message;
+
+          loginStatus.innerText =
+            error.message;
+
           return;
+
         }
 
-        loginSection.style.display = "none";
-        uploadSection.style.display = "block";
-        loginStatus.innerText = "";
+        loginSection.style.display =
+          "none";
+
+        uploadSection.style.display =
+          "block";
+
+        loginStatus.innerText =
+          "";
+
       });
 
 
@@ -237,73 +273,182 @@
 
         await supabaseClient.auth.signOut();
 
-        uploadSection.style.display = "none";
-        loginSection.style.display = "block";
+        uploadSection.style.display =
+          "none";
+
+        loginSection.style.display =
+          "block";
+
       });
 
 
-    photoInput.addEventListener("change", () => {
+    photoInput.addEventListener(
+      "change",
+      () => {
 
-      const file = photoInput.files[0];
+        const file =
+          photoInput.files[0];
 
-      if (!file) return;
+        if (!file) return;
 
-      preview.src = URL.createObjectURL(file);
-      preview.style.display = "block";
-    });
+        preview.src =
+          URL.createObjectURL(file);
+
+        preview.style.display =
+          "block";
+
+      }
+    );
 
 
     document
       .getElementById("uploadButton")
       .addEventListener("click", async () => {
 
-        const file = photoInput.files[0];
+        const file =
+          photoInput.files[0];
 
         const location =
-          document.getElementById("location").value.trim();
+          document
+            .getElementById("location")
+            .value
+            .trim();
 
         const film =
-          document.getElementById("film").value.trim();
+          document
+            .getElementById("film")
+            .value
+            .trim();
+
 
         if (!file) {
-          status.innerText = "Seleziona una fotografia.";
+
+          status.innerText =
+            "Seleziona una fotografia.";
+
           return;
+
         }
+
 
         if (!location) {
-          status.innerText = "Inserisci il luogo.";
+
+          status.innerText =
+            "Inserisci il luogo.";
+
           return;
+
         }
+
 
         if (!film) {
-          status.innerText = "Inserisci la pellicola.";
+
+          status.innerText =
+            "Inserisci la pellicola.";
+
           return;
+
         }
 
-        status.innerText = "Caricamento...";
+
+        status.innerText =
+          "Caricamento fotografia...";
+
 
         const extension =
-          file.name.split(".").pop();
+          file.name
+            .split(".")
+            .pop()
+            .toLowerCase();
+
 
         const fileName =
-          `${Date.now()}.${extension}`;
+          `${Date.now()}-${crypto.randomUUID()}.${extension}`;
 
-        const { error } =
+
+        /*
+        CARICAMENTO IMMAGINE
+        */
+
+        const { error: uploadError } =
           await supabaseClient
             .storage
             .from("photos")
-            .upload(fileName, file);
+            .upload(
+              fileName,
+              file,
+              {
+                cacheControl: "3600",
+                upsert: false
+              }
+            );
 
-        if (error) {
+
+        if (uploadError) {
+
           status.innerText =
-            "Errore upload: " + error.message;
+            "Errore upload: "
+            + uploadError.message;
 
           return;
+
         }
 
+
         status.innerText =
-          "Foto caricata correttamente ✅";
+          "Salvataggio informazioni...";
+
+
+        /*
+        SALVATAGGIO METADATI
+        */
+
+        const { error: databaseError } =
+          await supabaseClient
+            .from("photo_entries")
+            .insert({
+              image_path: fileName,
+              location: location,
+              film: film
+            });
+
+
+        if (databaseError) {
+
+          status.innerText =
+            "Foto caricata, ma errore database: "
+            + databaseError.message;
+
+          return;
+
+        }
+
+
+        /*
+        OPERAZIONE COMPLETATA
+        */
+
+        status.innerText =
+          "Foto pubblicata correttamente ✅";
+
+
+        document
+          .getElementById("location")
+          .value = "";
+
+        document
+          .getElementById("film")
+          .value = "";
+
+        photoInput.value = "";
+
+        preview.src = "";
+
+        preview.style.display =
+          "none";
+
       });
+
   </script>
 
 </body>
